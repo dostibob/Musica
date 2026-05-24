@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Nuestro Rincón Musical 💖</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none; /* Evita que se resalte texto al mantener presionado en iPhone */
+            -webkit-tap-highlight-color: transparent; /* Quita el cuadro azul feo al tocar botones en Android/Safari */
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: -webkit-fill-available; /* Ajuste para el menú inferior de Safari en iPhone */
+            background: linear-gradient(145deg, #2b1a2c 0%, #1e1320 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Poppins', 'Quicksand', system-ui, -apple-system, sans-serif;
+            padding: 15px;
+            overflow-x: hidden;
+        }
+
+        html {
+            height: -webkit-fill-available;
+        }
+
+        /* Contenedor principal adaptable a móviles */
+        .music-box {
+            max-width: 480px;
+            width: 100%;
+            background: rgba(30, 20, 35, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 2.5rem;
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 210, 255, 0.15), 0 0 20px rgba(255, 120, 200, 0.25);
+            padding: 1.5rem 1.2rem;
+            text-align: center;
+        }
+
+        /* Títulos escalables para pantallas pequeñas */
+        .title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #FFB7E6, #FF9FDF, #FF85C1);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.3rem;
+        }
+
+        .sub {
+            font-size: 0.85rem;
+            color: #f0c0e0;
+            background: rgba(255,220,240,0.15);
+            display: inline-block;
+            padding: 0.2rem 0.9rem;
+            border-radius: 40px;
+            margin-bottom: 1.2rem;
+        }
+
+        /* Disco de Vinilo Responsivo */
+        .visualizer {
+            background: radial-gradient(circle at 30% 20%, #2c1a2b, #190e1b);
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1.2rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .vinyl {
+            width: 125px;
+            height: 125px;
+            background: radial-gradient(circle, #333, #111);
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            animation: spinVinyl 6s linear infinite;
+            animation-play-state: paused;
+        }
+
+        .vinyl.playing {
+            animation-play-state: running;
+        }
+
+        .vinyl-center {
+            width: 32px;
+            height: 32px;
+            background: radial-gradient(circle, #ffbbee, #ff66aa);
+            border-radius: 50%;
+            box-shadow: inset 0 0 3px white, 0 0 8px #ff99cc;
+            z-index: 2;
+        }
+
+        .vinyl::before {
+            content: "";
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            background: repeating-radial-gradient(circle at center, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 8px, rgba(255,220,220,0.15) 8px, rgba(0,0,0,0) 12px);
+            pointer-events: none;
+        }
+
+        @keyframes spinVinyl {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Información de pistas */
+        .song-info {
+            margin: 0.2rem 0 0.8rem;
+        }
+
+        .song-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #FFE6F2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 5px;
+        }
+
+        .song-artist {
+            font-size: 0.85rem;
+            color: #e2b8d0;
+            margin-top: 3px;
+        }
+
+        /* Área de progreso optimizada para dedos */
+        .progress-container {
+            background: rgba(255, 215, 235, 0.2);
+            border-radius: 100px;
+            height: 8px; /* Un poco más gruesa para que sea fácil tocar en móvil */
+            width: 100%;
+            margin: 1rem 0 0.4rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #FF9AD5, #FF66B5);
+            width: 0%;
+            height: 100%;
+            border-radius: 100px;
+        }
+
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #efcddf;
+            margin-bottom: 0.8rem;
+            padding: 0 2px;
+        }
+
+        /* Botones grandes y cómodos para tocar en pantallas touch */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .ctrl-btn {
+            background: rgba(255, 220, 240, 0.12);
+            border: none;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            font-size: 1.6rem;
+            color: #FFE0F0;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            transition: transform 0.1s ease, background 0.2s ease;
+        }
+
+        /* Efecto activo optimizado para móviles (sustituye al hover) */
+        .ctrl-btn:active {
+            transform: scale(0.92);
+            background: rgba(255, 140, 200, 0.5);
+        }
+
+        /* Sección de Playlist móvil */
+        .playlist-section {
+            margin-top: 1.5rem;
+            background: rgba(0,0,0,0.15);
+            border-radius: 1.8rem;
+            padding: 0.7rem 0.4rem;
+        }
+
+        .playlist-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 0.6rem 0.6rem;
+            border-bottom: 1px solid rgba(255,200,230,0.2);
+            margin-bottom: 0.4rem;
+        }
+
+        .playlist-header span {
+            font-weight: 600;
+            color: #ffccee;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+
+        .track-list {
+            max-height: 180px; /* Evita que la lista colapse toda la pantalla del teléfono */
+            overflow-y: auto;
+            padding-right: 3px;
+            -webkit-overflow-scrolling: touch; /* Scroll suave y natural en iPhones */
+        }
+
+        .track-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 0.9rem; /* Margen cómodo para el dedo */
+            margin: 0.4rem 0;
+            background: rgba(255,245,250,0.06);
+            border-radius: 40px;
+            cursor: pointer;
+            border: 1px solid rgba(255,190,220,0.15);
+            transition: background 0.2s;
+        }
+
+        .track-item:active {
+            background: rgba(255, 150, 200, 0.25);
+        }
+
+        .track-item.active-track {
+            background: linear-gradient(95deg, #FF8AC0, #FF69B4);
+            border: none;
+            box-shadow: 0 2px 6px #ff66aa60;
+        }
+
+        .track-item.active-track .track-title {
+            color: #2e001f;
+            font-weight: 700;
+        }
+
+        .track-item.active-track .track-artist {
+            color: #3f172f;
+        }
+
+        .track-info {
+            text-align: left;
+            flex: 1;
+            overflow: hidden;
+            padding-right: 10px;
+        }
+
+        .track-title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #fad6ec;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .track-artist {
+            font-size: 0.7rem;
+            color: #ddb6cc;
+        }
+
+        .play-icon {
+            color: #ffbae0;
+            font-size: 0.8rem;
+        }
+
+        .active-track .play-icon {
+            color: #3a001f;
+        }
+
+        .footer-note {
+            margin-top: 1.2rem;
+            font-size: 0.7rem;
+            color: #f0b5d4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .heart-beat {
+            animation: pulseHeart 1.2s infinite;
+            display: inline-block;
+        }
+
+        @keyframes pulseHeart {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        /* Scrollbar minimalista */
+        .track-list::-webkit-scrollbar { width: 3px; }
+        .track-list::-webkit-scrollbar-track { background: transparent; }
+        .track-list::-webkit-scrollbar-thumb { background: #ff90c5; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="music-box">
+    <div class="title">
+        Respondiendo...
+    </div>
+    <div class="sub">
+        Nuestro Rincón Musical <i class="fas fa-heart"></i>
+    </div>
+
+    <div class="visualizer">
+        <div class="vinyl" id="vinylDisc">
+            <div class="vinyl-center"></div>
+        </div>
+    </div>
+
+    <div class="song-info">
+        <div class="song-title" id="currentSongTitle">Cargando...</div>
+        <div class="song-artist" id="currentSongArtist">💞 Nuestros recuerdos 💞</div>
+    </div>
+
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="time-info">
+        <span id="currentTime">0:00</span>
+        <span id="durationTime">0:00</span>
+    </div>
+
+    <div class="controls">
+        <button class="ctrl-btn" id="prevBtn"><i class="fas fa-backward-step"></i></button>
+        <button class="ctrl-btn" id="playPauseBtn"><i class="fas fa-play"></i></button>
+        <button class="ctrl-btn" id="nextBtn"><i class="fas fa-forward-step"></i></button>
+    </div>
+
+    <div class="playlist-section">
+        <div class="playlist-header">
+            <span>Una playlist para la niña que tanto amo</span>
+            <i class="fas fa-music"></i>
+        </div>
+        <div class="track-list" id="trackListContainer">
+            </div>
+        <div class="footer-note">
+            <i class="fas fa-heart heart-beat"></i> Hecho con todo mi amor para ti <i class="fas fa-heart heart-beat"></i>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // LISTA DE CANCIONES DROPBOX (.mp3)
+    // Cambia el final de tus enlaces compartidos de ?dl=0 a ?raw=1
+    // --------------------------------------------------------------
+    const songs = [
+        {
+            title: "Congratulations (feat. Bilal)",
+            artist: "Mac Miller",
+            url: "https://www.dropbox.com/scl/fi/09k8946jlc7mrfpzp4j3z/Congratulations-feat.-Bilal.mp3?rlkey=k6u4qifvqr2uegrga46r09lb6&st=e7ne95u3&raw=1"
+        },
+        {
+            title: "Amor Completo",
+            artist: "Mon Laferte",
+            url: "https://www.dropbox.com/scl/fi/tu-codigo/cancion2.mp3?rlkey=tu-key&raw=1"
+        },
+        {
+            title: "Yellow",
+            artist: "Coldplay",
+            url: "https://www.dropbox.com/scl/fi/tu-codigo/cancion3.mp3?rlkey=tu-key&raw=1"
+        }
+    ];
+
+    let audio = new Audio();
+    let currentSongIndex = 0;
+    let isPlaying = false;
+
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressFill = document.getElementById('progressFill');
+    const currentTimeSpan = document.getElementById('currentTime');
+    const durationTimeSpan = document.getElementById('durationTime');
+    const currentSongTitleSpan = document.getElementById('currentSongTitle');
+    const currentSongArtistSpan = document.getElementById('currentSongArtist');
+    const vinylDisc = document.getElementById('vinylDisc');
+    const trackListContainer = document.getElementById('trackListContainer');
+
+    function init() {
+        renderPlaylist();
+        loadSong(0);
+
+        playPauseBtn.addEventListener('click', togglePlayPause);
+        prevBtn.addEventListener('click', prevSong);
+        nextBtn.addEventListener('click', nextSong);
+        progressContainer.addEventListener('click', setProgressFromClick);
+
+        audio.addEventListener('timeupdate', updateProgress);
+        audio.addEventListener('loadedmetadata', () => {
+            durationTimeSpan.innerText = formatTime(audio.duration);
+        });
+        
+        // El secreto de autoplay continuo para móviles: reasignar src tras interacción previa
+        audio.addEventListener('ended', () => {
+            nextSong();
+        });
+    }
+
+    function loadSong(index) {
+        currentSongIndex = index;
+        const song = songs[currentSongIndex];
+        audio.src = song.url;
+        
+        // Forzar precarga para iOS Safari
+        audio.load(); 
+        
+        currentSongTitleSpan.innerText = song.title;
+        currentSongArtistSpan.innerText = song.artist;
+        updateActiveTrackInList();
+
+        if (isPlaying) {
+            audio.play().catch(() => {
+                // Si el navegador móvil bloquea el cambio automático, actualiza la UI a pausa
+                isPlaying = false;
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                vinylDisc.classList.remove('playing');
+            });
+        }
+    }
+
+    function togglePlayPause() {
+        if (isPlaying) {
+            audio.pause();
+            isPlaying = false;
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            vinylDisc.classList.remove('playing');
+        } else {
+            audio.play().then(() => {
+                isPlaying = true;
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                vinylDisc.classList.add('playing');
+            }).catch(err => {
+                console.log("Interacción requerida por el dispositivo móvil");
+            });
+        }
+    }
+
+    function nextSong() {
+        let newIndex = currentSongIndex + 1;
+        if (newIndex >= songs.length) newIndex = 0;
+        loadSong(newIndex);
+    }
+
+    function prevSong() {
+        let newIndex = currentSongIndex - 1;
+        if (newIndex < 0) newIndex = songs.length - 1;
+        loadSong(newIndex);
+    }
+
+    function updateProgress() {
+        if (audio.duration) {
+            const percent = (audio.currentTime / audio.duration) * 100;
+            progressFill.style.width = `${percent}%`;
+            currentTimeSpan.innerText = formatTime(audio.currentTime);
+        }
+    }
+
+    function setProgressFromClick(e) {
+        if (audio.duration) {
+            const rect = progressContainer.getBoundingClientRect();
+            // Soporte para clicks del mouse y toques en pantallas touch
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clickX = clientX - rect.left;
+            const totalWidth = rect.width;
+            audio.currentTime = (clickX / totalWidth) * audio.duration;
+        }
+    }
+
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function renderPlaylist() {
+        trackListContainer.innerHTML = '';
+        songs.forEach((song, idx) => {
+            const trackDiv = document.createElement('div');
+            trackDiv.classList.add('track-item');
+            if (idx === currentSongIndex) trackDiv.classList.add('active-track');
+            trackDiv.innerHTML = `
+                <div class="track-info">
+                    <div class="track-title">${escapeHtml(song.title)}</div>
+                    <div class="track-artist">${escapeHtml(song.artist)}</div>
+                </div>
+                <div class="play-icon"><i class="fas fa-music"></i></div>
+            `;
+            trackDiv.addEventListener('click', () => {
+                if (currentSongIndex === idx) {
+                    togglePlayPause();
+                } else {
+                    isPlaying = true;
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    vinylDisc.classList.add('playing');
+                    loadSong(idx);
+                }
+            });
+            trackListContainer.appendChild(trackDiv);
+        });
+    }
+
+    function updateActiveTrackInList() {
+        const items = document.querySelectorAll('.track-item');
+        items.forEach((item, i) => {
+            if (i === currentSongIndex) item.classList.add('active-track');
+            else item.classList.remove('active-track');
+        });
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>

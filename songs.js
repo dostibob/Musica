@@ -199,7 +199,7 @@ const songs = [
             artist: "Kapo",
             url: "https://www.dropbox.com/scl/fi/fyq4ivprvkruf932uzjtk/RUFF.mp3?rlkey=s4xmgbppepmpg4rlfbmmrbgxd&st=jcvfa2y6&raw=1"
         },
-        {title: "Proximamente...",
+        {title: "Proximamente..",
             artist: "...",
             url: "..."
         }

@@ -187,6 +187,18 @@ const songs = [
             artist: "CA7RIEL & Paco Amoroso",
             url: "https://www.dropbox.com/scl/fi/u8vxwzbjlhtsvvapt6oa6/MI-DIOSA.mp3?rlkey=e7ininlvj3bynfx5fe70l4dkh&st=yh5a38ku&raw=1"
         },
+        {title: "Templo ",
+            artist: "Ozuna & Beéle",
+            url: "https://www.dropbox.com/scl/fi/dga4gfppm06bnu38o5zmu/Templo.mp3?rlkey=hu3tglffb357m53ul8aja5zb2&st=jb7yez79&raw=1"
+        },
+        {title: "Fallen",
+            artist: "Jaden",
+            url: "https://www.dropbox.com/scl/fi/04hn6tch7vfaox4331xaq/Fallen.mp3?rlkey=qmpx9kuwieseqiqe6xlwnl5ig&st=caiqvmrc&raw=1"
+        },
+        {title: "RUFF",
+            artist: "Kapo",
+            url: "https://www.dropbox.com/scl/fi/fyq4ivprvkruf932uzjtk/RUFF.mp3?rlkey=s4xmgbppepmpg4rlfbmmrbgxd&st=jcvfa2y6&raw=1"
+        },
         {title: "Proximamente...",
             artist: "...",
             url: "..."
